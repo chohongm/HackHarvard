@@ -7,7 +7,7 @@ var pave = pave || {};
 // User data entry
 pave.startAddress = "";
 pave.endAddress = "";
-pave.radius = 0;
+pave.radius = "";
 
 // Embed a google map widget into the website
 pave.initMap = function() {
@@ -35,12 +35,11 @@ pave.closeNav = function() {
 pave.enterPrefs = function(){
 	pave.startAddress = document.getElementById("startAddress").value;
 	pave.endAddress = document.getElementById("endAddress").value;
-	pave.radius = parseFloat(document.getElementById("radius").value);
+	pave.radius = document.getElementById("radius").value;
 
-	console.log("startAdd: " + pave.startAddress);
-	console.log("endAdd:   " + pave.endAddress);
-	console.log("radius:   " + pave.radius);
+	calculateAndDisplayRoute();
 }
+
 
 
 
