@@ -79,17 +79,31 @@ function callback(results, status) {
 function createMarker(place) {
   if (points.indexOf(place) == -1) {
     var placeLoc = place.geometry.location;
+    var photos = place.photos;
+    if (!photos) {
+        return;
+    }
     var marker = new google.maps.Marker({
       map: map,
-      position: place.geometry.location
+      position: place.geometry.location,
+      title: place.name,
+      icon: photos[0].getUrl({'maxWidth': 35, 'maxHeight': 35}),
     });
 
+    marker.addListener('mouseover', function() {
+        infowindow.setContent(this.title + "\n" + place.opening_hours.weekdayText());
+        infowindow.open(map, this);
+
+    marker.addListener('mouseout', function() {
+        infowindow.close();
+    });        
+    var infowindow = new google.maps.InfoWindow();
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.setContent(place.name);
       infowindow.open(map, this);
     });
     points.push(place);
-    console.log(place);
+    //console.log(place);
   }
 }
 
