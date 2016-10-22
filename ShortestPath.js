@@ -7,12 +7,38 @@ var myRoute;
 var map;
 var points = [];
 
-// Create a map and center it on Manhattan.
 function initMap() {
+  var markerArray = [];
+
+  // Instantiate a directions service.
+  var directionsService = new google.maps.DirectionsService;
+
+  // Create a map and center it on Manhattan.
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 13,
     center: {lat: 42.3736158, lng: -71.1097335}
   });
+
+  // Create a renderer for directions and bind it to the map.
+  var directionsDisplay = new google.maps.DirectionsRenderer({map: map});
+
+  // Instantiate an info window to hold step text.
+  var stepDisplay = new google.maps.InfoWindow;
+
+  // Display the route between the initial start and end selections.
+  calculateAndDisplayRoute(
+      directionsDisplay, directionsService, markerArray, stepDisplay, map);
+  // Listen to change events from the start and end lists.
+  var onChangeHandler = function() {
+    calculateAndDisplayRoute(
+        directionsDisplay, directionsService, markerArray, stepDisplay, map);
+  };
+  document.getElementById('start').addEventListener('change', onChangeHandler);
+  document.getElementById('end').addEventListener('change', onChangeHandler);
+  // get all routes.
+  //directionsDisplay = new google.maps.DirectionsRenderer();
+  //result = directionsDisplay.getDirections();
+  //console.log(result);
 }
 
 //calculates distance between two points in km's
@@ -20,13 +46,17 @@ function calcDistance(p1, p2) {
   return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
 }
 
-function displayNearRoutePlaces(tmpRoute) {
+function displayNearRoutePlaces() {
   // code below is for places service.
   // request to find all 'places to visit' around given location.
   // do this for every 500m point along the route from start to end.
 
+
+  // get all routes.
+  //var result = directionsDisplay.getDirections();
+
   // assume there is only one route, find all path points.
-  var route = tmpRoute;
+  var route = myRoute;
   var pathPoints = new Array();
   var legs = route.legs;
   for (i = 0; i < legs.length; i++) {
@@ -52,9 +82,8 @@ function displayNearRoutePlaces(tmpRoute) {
       //console.log(xy.lat() + ", " + xy.lng());
       var request = {
         location: point,
-        radius: pave.radius,
+        radius: '500',
         keyword: 'tourist attraction',
-        openNow: true
       };
       service = new google.maps.places.PlacesService(map);
       service.nearbySearch(request, callback);
@@ -70,8 +99,8 @@ function callback(results, status) {
       var place = results[i];
       // make sure this function checked for duplicates!!!
       createMarker(results[i]);
-      //console.log(results[i]);
-      // createPhotoMarker(results[i]);
+      console.log(results[i]);
+      //createPhotoMarker(results[i]);
     }
   }
 }
@@ -79,17 +108,45 @@ function callback(results, status) {
 function createMarker(place) {
   if (points.indexOf(place) == -1) {
     var placeLoc = place.geometry.location;
+
+    var photos = place.photos;
+    if (!photos) {
+      return;
+    }
+    
     var marker = new google.maps.Marker({
       map: map,
-      position: place.geometry.location
+      position: place.geometry.location,
+      title: place.name,
+      icon: photos[0].getUrl({'maxWidth': 35, 'maxHeight': 35}),
     });
 
+    marker.addListener('mouseover', function() {
+        infowindow.setContent(this.title + "\n" + place.opening_hours.weekdayText());
+        infowindow.open(map, this);
+    });
+
+    // assuming you also want to hide the infowindow when user mouses-out
+    marker.addListener('mouseout', function() {
+        infowindow.close();
+    });
+    
+    /*
+    var marker = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      map: map,
+      icon: photos[0].getUrl({'maxWidth': 35, 'maxHeight': 35}),
+    });
+    */
+    var infowindow = new google.maps.InfoWindow();
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.setContent(place.name);
       infowindow.open(map, this);
     });
     points.push(place);
-    console.log(place);
+    //console.log(place);
   }
 }
 
@@ -99,7 +156,6 @@ function createPhotoMarker(place) {
   if (!photos) {
     return;
   }
-
   var marker = new google.maps.Marker({
     map: map,
     position: place.geometry.location,
@@ -110,35 +166,18 @@ function createPhotoMarker(place) {
 */
 
 // direction service functions from here.
-function calculateAndDisplayRoute() {
-  var markerArray = [];
-
-
-
-  // Instantiate a directions service.
-  var directionsService = new google.maps.DirectionsService;
-
-  // Create a renderer for directions and bind it to the map.
-  var directionsDisplay = new google.maps.DirectionsRenderer({map: map});
-
-  // Instantiate an info window to hold step text.
-  var stepDisplay = new google.maps.InfoWindow;
-
+function calculateAndDisplayRoute(directionsDisplay, directionsService,
+    markerArray, stepDisplay, map) {
   // First, remove any existing markers from the map.
   for (var i = 0; i < markerArray.length; i++) {
     markerArray[i].setMap(null);
   }
 
-
   // Retrieve the start and end locations and create a DirectionsRequest using
-  console.log("startAdd: " + pave.startAddress);
-  console.log("endAdd:   " + pave.endAddress);
-  console.log("radius:   " + pave.radius);
-
-
+  // WALKING directions.
   directionsService.route({
-    origin: pave.startAddress,
-    destination: pave.endAddress,
+    origin: document.getElementById('start').value,
+    destination: document.getElementById('end').value,
     // can use 'WALKING'
     travelMode: 'DRIVING'
   }, function(response, status) {
@@ -148,14 +187,11 @@ function calculateAndDisplayRoute() {
       //document.getElementById('warnings-panel').innerHTML ='<b>' + response.routes[0].warnings + '</b>';
       directionsDisplay.setDirections(response);
       myRoute = directionsDisplay.directions.routes[0];
-      displayNearRoutePlaces(myRoute);
       //showSteps(response, markerArray, stepDisplay, map);
     } else {
       window.alert('Directions request failed due to ' + status);
     }
   });
-
-
 }
 
 function showSteps(directionResult, markerArray, stepDisplay, map) {
