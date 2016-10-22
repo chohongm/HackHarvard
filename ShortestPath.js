@@ -84,7 +84,6 @@ function displayNearRoutePlaces() {
         location: point,
         radius: '500',
         keyword: 'tourist attraction',
-        openNow: true
       };
       service = new google.maps.places.PlacesService(map);
       service.nearbySearch(request, callback);
@@ -100,8 +99,8 @@ function callback(results, status) {
       var place = results[i];
       // make sure this function checked for duplicates!!!
       createMarker(results[i]);
-      //console.log(results[i]);
-      // createPhotoMarker(results[i]);
+      console.log(results[i]);
+      //createPhotoMarker(results[i]);
     }
   }
 }
@@ -109,17 +108,45 @@ function callback(results, status) {
 function createMarker(place) {
   if (points.indexOf(place) == -1) {
     var placeLoc = place.geometry.location;
+
+    var photos = place.photos;
+    if (!photos) {
+      return;
+    }
+    
     var marker = new google.maps.Marker({
       map: map,
-      position: place.geometry.location
+      position: place.geometry.location,
+      title: place.name,
+      icon: photos[0].getUrl({'maxWidth': 35, 'maxHeight': 35}),
     });
 
+    marker.addListener('mouseover', function() {
+        infowindow.setContent(this.title + "\n" + place.opening_hours.weekdayText());
+        infowindow.open(map, this);
+    });
+
+    // assuming you also want to hide the infowindow when user mouses-out
+    marker.addListener('mouseout', function() {
+        infowindow.close();
+    });
+    
+    /*
+    var marker = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      map: map,
+      icon: photos[0].getUrl({'maxWidth': 35, 'maxHeight': 35}),
+    });
+    */
+    var infowindow = new google.maps.InfoWindow();
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.setContent(place.name);
       infowindow.open(map, this);
     });
     points.push(place);
-    console.log(place);
+    //console.log(place);
   }
 }
 
@@ -161,7 +188,7 @@ function calculateAndDisplayRoute(directionsDisplay, directionsService,
       //document.getElementById('warnings-panel').innerHTML ='<b>' + response.routes[0].warnings + '</b>';
       directionsDisplay.setDirections(response);
       myRoute = directionsDisplay.directions.routes[0];
-      showSteps(response, markerArray, stepDisplay, map);
+      //showSteps(response, markerArray, stepDisplay, map);
     } else {
       window.alert('Directions request failed due to ' + status);
     }
