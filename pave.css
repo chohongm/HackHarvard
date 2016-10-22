@@ -71,7 +71,7 @@ a {
 
 
 /* Sidenav elements */
-#sigNav {
+.sigNav {
 	padding-top: 20px;
 }
 
@@ -95,4 +95,13 @@ hr {
 	color: #828282;
 	margin-right: 10%;
 	margin-left: 10%;
+}
+
+#paveIt {
+	display:block;
+	
+	margin: 10px auto;
+	padding: 12px 20px;
+	background-color: color: #828282;
+
 }

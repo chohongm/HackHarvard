@@ -14,26 +14,25 @@
     		way<span style="font-weight:bold">paver</span>
     	</header>
 
-        <div id="openSideNav" onclick="pave.openNav()"> <img id="svgNav" src="icon_menu_white.svg" width="40"> </div>
+        <div id="openSideNav" onclick="pave.openNav()"> <img class="svgNav" src="icon_menu_white.svg" width="40"> </div>
 
     	<div id="mySidenav" class="sidenav"> 
             <a href="javascript:void(0)" class="closebtn" onclick="pave.closeNav()">&times;</a>
-    	    <form>
-                <h3><img id="svgNav" src="icon_place_white.svg" width="18"> Start</h3>
-                <input type="text" placeholder="address" name="address"></input>
 
-                <h3><img id="svgNav" src="icon_place_white.svg" width="18"> Destination</h3>
-                <input type="text" placeholder="address" name="address"></input>
-                <br>
-                <hr>
-                <br>
+            <h3><img class="svgNav" src="icon_place_white.svg" width="18"> Start</h3>
+            <input type="text" id="startAddress" placeholder="address" name="startAddress"></input>
 
-                <h3><img id="svgNav" src="icon_radius_white.svg" width="18"> Radius</h3>
-                <input type="text" pattern="[0-9]*" placeholder="distance in m"></input>
-            </form>
+            <h3><img class="svgNav" src="icon_place_white.svg" width="18"> Destination</h3>
+            <input type="text" id="endAddress"  placeholder="address" name="endAddress"></input>
 
-            
+            <br>
+            <hr>
+            <br>
 
+            <h3><img class="svgNav" src="icon_radius_white.svg" width="18"> Radius</h3>
+            <input type="text" id="radius"  pattern="[0-9]*" placeholder="distance in m"></input>
+
+            <input type="submit" id="paveIt" value="pave it" onclick="pave.enterPrefs()"></input>
 
   		 </div>
 
