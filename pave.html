@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Pave The Way</title>
+        <title>waypaver</title>
         <link rel="stylesheet" type="text/css" 
         href="pave.css">
         <link rel="stylesheet" type="text/css"
@@ -10,11 +10,35 @@
     </head>
 
     <body>
-    	<h2> Pave The Way </h2>
+    	<header>
+    		way<span style="font-weight:bold">paver</span>
+    	</header>
 
-    	<div id="map">
+        <div id="openSideNav" onclick="pave.openNav()"> <img id="svgNav" src="icon_menu_white.svg" width="40"> </div>
 
-    	</div>
+    	<div id="mySidenav" class="sidenav"> 
+            <a href="javascript:void(0)" class="closebtn" onclick="pave.closeNav()">&times;</a>
+    	    <form>
+                <h3><img id="svgNav" src="icon_place_white.svg" width="18"> Start</h3>
+                <input type="text" placeholder="address" name="address"></input>
+
+                <h3><img id="svgNav" src="icon_place_white.svg" width="18"> Destination</h3>
+                <input type="text" placeholder="address" name="address"></input>
+                <br>
+                <hr>
+                <br>
+
+                <h3><img id="svgNav" src="icon_radius_white.svg" width="18"> Radius</h3>
+                <input type="text" pattern="[0-9]*" placeholder="distance in m"></input>
+            </form>
+
+            
+
+
+  		 </div>
+
+
+    	<div id="map"></div>
 
 	<script src="pave.js"></script>
     <script async defer
