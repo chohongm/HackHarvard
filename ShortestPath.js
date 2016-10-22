@@ -5,6 +5,7 @@ var stepDisplay;
 var markerArray = [];
 var myRoute;
 var map;
+var numMarkers = 0;
 
 function initMap() {
   var markerArray = [];
@@ -38,7 +39,11 @@ function initMap() {
   //directionsDisplay = new google.maps.DirectionsRenderer();
   //result = directionsDisplay.getDirections();
   //console.log(result);
+}
 
+//calculates distance between two points in km's
+function calcDistance(p1, p2) {
+  return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
 }
 
 function displayNearRoutePlaces() {
@@ -66,19 +71,26 @@ function displayNearRoutePlaces() {
 
   // Iterate over the pathPoints,
   // for every 50 points, request to find all places to visit within 500 range given location
-  for (var i =0; i < pathPoints.length; i+=5) {
-    var xy = pathPoints[i];
-    //contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' + xy.lng();
-    var point = new google.maps.LatLng(xy.lat(), xy.lng());
-    console.log(xy.lat() + ", " + xy.lng());
-    var request = {
-      location: point,
-      radius: '500',
-      query: 'places to visit'
-    };
-    service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(request, callback);
+  var p1 = pathPoints[0];
+  var p2;
+  for (var i =1; i < pathPoints.length; i++) {
+    p2 = pathPoints[i];
+    if (calcDistance(p1, p2) > 0.5) {
+      var xy = p2;
+      //contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' + xy.lng();
+      var point = new google.maps.LatLng(xy.lat(), xy.lng());
+      //console.log(xy.lat() + ", " + xy.lng());
+      var request = {
+        location: point,
+        radius: '500',
+        query: 'places to visit'
+      };
+      service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, callback);
+      p1 = p2;
+    }
   }
+  console.log(numMarkers);
 }
 
 // point service functions from here.
@@ -92,6 +104,20 @@ function callback(results, status) {
       // createPhotoMarker(results[i]);
     }
   }
+}
+
+function createMarker(place) {
+  var placeLoc = place.geometry.location;
+  var marker = new google.maps.Marker({
+    map: map,
+    position: place.geometry.location
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(place.name);
+    infowindow.open(map, this);
+  });
+  numMarkers++;
 }
 
 /*
