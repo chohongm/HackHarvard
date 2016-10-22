@@ -93,6 +93,7 @@ function createMarker(place) {
     marker.addListener('mouseover', function() {
         infowindow.setContent(this.title + "\n" + place.opening_hours.weekdayText());
         infowindow.open(map, this);
+    });
 
     marker.addListener('mouseout', function() {
         infowindow.close();
