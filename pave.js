@@ -36,6 +36,10 @@ pave.enterPrefs = function(){
 	pave.startAddress = document.getElementById("startAddress").value;
 	pave.endAddress = document.getElementById("endAddress").value;
 	pave.radius = parseFloat(document.getElementById("radius").value);
+
+	console.log("startAdd: " + pave.startAddress);
+	console.log("endAdd:   " + pave.endAddress);
+	console.log("radius:   " + pave.radius);
 }
 
 
