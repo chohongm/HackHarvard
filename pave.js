@@ -40,6 +40,31 @@ pave.enterPrefs = function(){
 	calculateAndDisplayRoute();
 }
 
+// insert this waypoint between start and end points
+pave.addWaypoint = function(place){
+	var tmp = document.getElementById("addLoc");
+	var tmpSpan = document.createElement("p");
+	var tmpImg = document.createElement("img");
+	var textField = document.createTextNode(place + "\n");
+	var tmpbr = document.createElement("br");
+	var tmpDown = document.createElement("img");
+
+	// create icon
+	tmpImg.src = "icon_add_white.svg"
+	tmpImg.width = "18";
+
+	tmpDown.src = "icon_darrow_white.svg"
+	tmpDown.className = "downArrow";
+
+	// add image + name of event
+	tmpSpan.appendChild(tmpImg);
+	tmpSpan.appendChild(textField);
+
+	tmp.appendChild(tmpSpan);
+	tmp.appendChild(tmpDown);
+	tmp.appendChild(tmpbr);
+
+}
 
 
 
@@ -47,3 +72,4 @@ pave.enterPrefs = function(){
 pave.init = function() {
 	pave.initMap();
 }
+

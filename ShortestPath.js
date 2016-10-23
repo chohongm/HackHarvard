@@ -91,17 +91,19 @@ function createMarker(place) {
     });
 
     marker.addListener('mouseover', function() {
-        infowindow.setContent(this.title + "\n" + place.opening_hours.weekdayText());
+        infowindow.setContent(this.title + "\n" + place.opening_hours.weekdayText);
         infowindow.open(map, this);
     });
 
     marker.addListener('mouseout', function() {
         infowindow.close();
-    });        
+    });
+
     var infowindow = new google.maps.InfoWindow();
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.setContent(place.name);
       infowindow.open(map, this);
+      pave.addWaypoint(place.name);
     });
     points.push(place);
     //console.log(place);
@@ -128,7 +130,7 @@ function createPhotoMarker(place) {
 function calculateAndDisplayRoute() {
   var markerArray = [];
 
-
+  map = new google.maps.Map(document.getElementById('map'));
 
   // Instantiate a directions service.
   var directionsService = new google.maps.DirectionsService;

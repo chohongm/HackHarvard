@@ -39,6 +39,11 @@ a {
 	padding-top: 8px;
 }
 
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+}
+
+
 /* Size of google maps */
 #map {
     height: 100vh;
@@ -71,8 +76,15 @@ a {
 
 
 /* Sidenav elements */
-.sigNav {
-	padding-top: 20px;
+.downArrow {
+	display:block;
+	margin: 10px auto;
+}
+
+p {
+	display:block;
+	margin-left:10px auto;
+	margin-right:10px auto;
 }
 
 h3 {
@@ -81,10 +93,16 @@ h3 {
 	padding-left: 15px;
 }
 
-input[type=text] {
+input[type=text], p {
 	display: block;
 	margin: 10px auto;
 	padding: 12px 20px;
+}
+
+#addLoc {
+	font-weight: 400;
+	color: white;
+	padding-left: 15px;
 }
 
 hr {
