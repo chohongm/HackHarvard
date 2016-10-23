@@ -37,7 +37,8 @@ pave.enterPrefs = function(){
 	pave.endAddress = document.getElementById("endAddress").value;
 	pave.radius = document.getElementById("radius").value;
 
-	calculateAndDisplayRoute();
+	//calculateAndDisplayRoute();
+	setUp();
 }
 
 // insert this waypoint between start and end points
